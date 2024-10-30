@@ -2,20 +2,24 @@ using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using TMPro;
 
 public class Dice : MonoBehaviour
 {
     public Sprite[] diceSprites;
     public Image cooldownImage;
     private SpriteRenderer spriteRenderer;
+    [SerializeField]
+    private TextMeshProUGUI numberText;
 
     [SerializeField]
-    private float rollDuration = 1.5f;
+    private float rollDuration = 1.5f, rollInterval = 2f, bulletSpeed = 1f;
     [SerializeField]
-    private float rollInterval = 2f; // Thời gian giữa các lần roll
+    private GameObject bulletPrefab;
     [SerializeField]
     private bool isRolling = false, isDragging = false;
-
+    [SerializeField]
+    private EnumConst.BulletDirection bulletDirection;
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -26,8 +30,9 @@ public class Dice : MonoBehaviour
     {
         cooldownImage.fillAmount = 1;
         float elapsedTime = 0;
-        while (elapsedTime < rollInterval)
+        while (elapsedTime <= rollInterval)
         {
+            yield return new WaitForSeconds(0.05f);
             if (isDragging)
             {
                 ResetDice();
@@ -35,7 +40,6 @@ public class Dice : MonoBehaviour
             }
             cooldownImage.fillAmount -= 0.05f / rollInterval;
             elapsedTime += 0.05f;
-            yield return new WaitForSeconds(0.05f);
         }
         RollDice();
     }
@@ -71,7 +75,7 @@ public class Dice : MonoBehaviour
 
             transform.DOShakeScale(0.1f, 0.1f, 10, 90, false, ShakeRandomnessMode.Harmonic).OnComplete(() =>
             {
-                transform.DOScale(1.1f, 0.1f).OnComplete(() =>
+                transform.DOScale(1.2f, 0.1f).OnComplete(() =>
                     transform.DOScale(1f, 0.1f));
             });
 
@@ -83,11 +87,35 @@ public class Dice : MonoBehaviour
         spriteRenderer.sprite = diceSprites[finalResult];
         transform.DORotate(Vector3.zero, 0.2f);
 
-        //Delay cho nhìn kết quả + attack
-        yield return new WaitForSeconds(2f);
+        // Hiển thị kết quả với hiệu ứng pop-up
+        numberText.text = (finalResult + 1).ToString();
+        numberText.gameObject.SetActive(true);
+        numberText.transform.localScale = Vector3.zero;
+        numberText.transform.DOScale(1.5f, 0.5f).SetEase(Ease.OutCubic).OnComplete(() =>
+            numberText.transform.DOScale(0f, 0.5f)
+        );
+
+        //Bắn theo số roll ra
+        yield return StartCoroutine(Fire(finalResult + 1));
+
+        //Đợi bắn xong mới reset và roll tiếp
         ResetDice();
         StartCoroutine(Roll());
     }
+
+    IEnumerator Fire(int amount)
+    {
+        //Delay giữa các viên đạn nhìn cho dễ
+        float bulletDelay = 0.5f;
+
+        for (int i = 0; i < amount; i++)
+        {
+            yield return new WaitForSeconds(bulletDelay);
+            GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+            bullet.GetComponent<Bullet>().Fire(bulletDirection, bulletSpeed);
+        }
+    }
+
 
     void OnMouseDrag()
     {
