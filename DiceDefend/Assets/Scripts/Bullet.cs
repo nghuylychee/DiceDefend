@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    public float BulletDamage {get {return bulletDamage;}}
+
+    
+    [SerializeField]
+    private float bulletDamage;
     private void Update()
     {
         Vector3 screenPosition = Camera.main.WorldToViewportPoint(transform.position);
@@ -13,8 +18,9 @@ public class Bullet : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void Fire(EnumConst.BulletDirection direction, float bulletSpeed)
+    public void Fire(EnumConst.BulletDirection direction, float bulletSpeed, float bulletDamage)
     {
+        this.bulletDamage = bulletDamage;
         var rb = this.GetComponent<Rigidbody2D>();
         switch (direction) 
         {

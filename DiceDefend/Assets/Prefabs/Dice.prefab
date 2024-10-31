@@ -108,9 +108,10 @@ MonoBehaviour:
   - {fileID: 1704177650, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}
   cooldownImage: {fileID: 4411631661726802516}
   numberText: {fileID: 6068794500361141776}
-  rollDuration: 1
-  rollInterval: 3
+  rollDuration: 0.5
+  rollInterval: 2
   bulletSpeed: 1
+  bulletDamage: 1
   bulletPrefab: {fileID: 8986337869102017123, guid: 728853d927dea9f47ab7c8ee09cf1f09, type: 3}
   isRolling: 0
   isDragging: 0

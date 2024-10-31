@@ -13,7 +13,7 @@ public class Dice : MonoBehaviour
     private TextMeshProUGUI numberText;
 
     [SerializeField]
-    private float rollDuration = 1.5f, rollInterval = 2f, bulletSpeed = 1f;
+    private float rollDuration, rollInterval, bulletSpeed, bulletDamage;
     [SerializeField]
     private GameObject bulletPrefab;
     [SerializeField]
@@ -112,7 +112,7 @@ public class Dice : MonoBehaviour
         {
             yield return new WaitForSeconds(bulletDelay);
             GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-            bullet.GetComponent<Bullet>().Fire(bulletDirection, bulletSpeed);
+            bullet.GetComponent<Bullet>().Fire(bulletDirection, bulletSpeed, bulletDamage);
         }
     }
 
