@@ -351,9 +351,9 @@ MonoBehaviour:
   moveSpeed: 0.3
   coinEarn: 0
   damage: 1
-  detectionRange: 0.1
+  detectionRange: 1
   attackSpeed: 3
-  attackRange: 0.1
+  attackRange: 0.2
 --- !u!1 &4036946122955630085
 GameObject:
   m_ObjectHideFlags: 0

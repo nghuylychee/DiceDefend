@@ -15,24 +15,26 @@ public class Dice : MonoBehaviour
     [SerializeField]
     private HealthBar healthBar;
     [SerializeField]
-    private float rollDuration, rollInterval, bulletSpeed, bulletDamage, currentHP, maxHP;
+    private float rollDuration, rollInterval, bulletSpeed, bulletDamage, currentHP, maxHP, detectionRange;
     [SerializeField]
     private GameObject bulletPrefab;
     [SerializeField]
     private bool isRolling, isDragging, isAlive;
     [SerializeField]
     private EnumConst.BulletDirection bulletDirection;
+    private Transform target;
     void Start()
     {
         Init();
     }
-    private void Init()
+    public void Init()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         isRolling = false;
         isDragging = false;
         isAlive = true;
         currentHP = maxHP;
+        target = null;
         healthBar.UpdateHealthBar(currentHP / maxHP);
         StartCoroutine(Roll());
     }
@@ -114,6 +116,9 @@ public class Dice : MonoBehaviour
     }
     IEnumerator Fire(int amount)
     {
+        //Tìm hướng của enemy để bắn
+        FindTarget();
+
         //Delay giữa các viên đạn nhìn cho dễ
         float bulletDelay = 0.5f;
 
@@ -121,8 +126,35 @@ public class Dice : MonoBehaviour
         {
             yield return new WaitForSeconds(bulletDelay);
             GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-            bullet.GetComponent<Bullet>().Fire(bulletDirection, bulletSpeed, bulletDamage);
+
+            if (target)
+                bullet.GetComponent<Bullet>().Fire(target, bulletSpeed, bulletDamage);
+            else
+                bullet.GetComponent<Bullet>().Fire(bulletDirection, bulletSpeed, bulletDamage);
         }
+    }
+    private void FindTarget()
+    {
+        // Tìm Dice trong tầm phát hiện, giả định Dice có tag là "Dice"
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRange);
+        Transform closestEnemy = null;
+        float closestDistance = detectionRange;
+
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("Enemy"))
+            {
+                float distance = Vector2.Distance(transform.position, hit.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestEnemy = hit.transform;
+                }
+            }
+        }
+
+        // Nếu có Enemy trong tầm thì detect ko là null
+        target = closestEnemy != null ? closestEnemy : null;
     }
     public void TakeDamage(float damage)
     {

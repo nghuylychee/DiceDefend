@@ -109,12 +109,13 @@ MonoBehaviour:
   cooldownImage: {fileID: 4411631661726802516}
   numberText: {fileID: 6068794500361141776}
   healthBar: {fileID: 8966580215445625907}
-  rollDuration: 0.5
-  rollInterval: 2
+  rollDuration: 0.25
+  rollInterval: 1
   bulletSpeed: 1
   bulletDamage: 1
   currentHP: 0
-  maxHP: 2
+  maxHP: 10
+  detectionRange: 2
   bulletPrefab: {fileID: 8986337869102017123, guid: 728853d927dea9f47ab7c8ee09cf1f09, type: 3}
   isRolling: 0
   isDragging: 0
