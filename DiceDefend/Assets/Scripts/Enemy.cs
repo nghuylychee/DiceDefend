@@ -5,14 +5,13 @@ using DG.Tweening;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField]
-    private Slider healthBar;
 
     [SerializeField]
+    private HealthBar healthBar;
+    [SerializeField]
     private float maxHP, currentHP, moveSpeed, coinEarn, damage, detectionRange, attackSpeed, attackRange;
-    private Transform target, king  ;
-    private bool isAlive = true, isAttacking = false;
-    private Color initColor;
+    private Transform target, king;
+    private bool isAlive, isAttacking;
 
     private void Start()
     {
@@ -21,6 +20,8 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        if (target == null)
+            StopAttack();
         if (isAlive && !isAttacking)
         {
             FindTarget();
@@ -29,15 +30,16 @@ public class Enemy : MonoBehaviour
     }
     public void Init()
     {
+        isAlive = true; isAttacking = false;
         king = GameObject.FindWithTag("King").transform;
         currentHP = maxHP;
-        healthBar.value = 1;        
+        healthBar.UpdateHealthBar(currentHP / maxHP);        
     }   
 
     public void TakeDamage(float damage)
     {
         currentHP -= damage;
-        healthBar.value = Mathf.Max(currentHP / maxHP, 0);
+        healthBar.UpdateHealthBar(currentHP / maxHP);
 
         SpriteRenderer rend = GetComponent<SpriteRenderer>();
         rend.DOColor(Color.white, 0.05f).OnComplete(() => 
@@ -48,6 +50,7 @@ public class Enemy : MonoBehaviour
             });
         });
 
+
         if (currentHP <= 0)
         {
             Die();
@@ -57,7 +60,6 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         isAlive = false;
-    
         //GameManager.Instance.AddMoney(rewardMoney);
         Destroy(gameObject);
     }
@@ -106,19 +108,18 @@ public class Enemy : MonoBehaviour
         isAttacking = true;
 
         // Tấn công mục tiêu
-        while (isAttacking)
+        while (isAttacking && target != null)
         {
             if (target.CompareTag("Dice"))
             {
-                Debug.Log("Damage " + target.name + " " + damage);
-                // target.GetComponent<Dice>().TakeDamage(damage);
+                // Debug.Log("Damage " + target.name + " " + damage);
+                target.GetComponent<Dice>().TakeDamage(damage);
             }
             else if (target.CompareTag("King"))
             {
-                Debug.Log("Damage " + target.name + " " + damage);
-                // king.GetComponent<King>().TakeDamage(damage);
+                // Debug.Log("Damage " + target.name + " " + damage);
+                king.GetComponent<King>().TakeDamage(damage);
             }
-
             yield return new WaitForSeconds(attackSpeed);
         }
     }

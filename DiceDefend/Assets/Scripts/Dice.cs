@@ -7,22 +7,33 @@ using TMPro;
 public class Dice : MonoBehaviour
 {
     public Sprite[] diceSprites;
+    [SerializeField]
     public Image cooldownImage;
     private SpriteRenderer spriteRenderer;
     [SerializeField]
     private TextMeshProUGUI numberText;
-
     [SerializeField]
-    private float rollDuration, rollInterval, bulletSpeed, bulletDamage;
+    private HealthBar healthBar;
+    [SerializeField]
+    private float rollDuration, rollInterval, bulletSpeed, bulletDamage, currentHP, maxHP;
     [SerializeField]
     private GameObject bulletPrefab;
     [SerializeField]
-    private bool isRolling = false, isDragging = false;
+    private bool isRolling, isDragging, isAlive;
     [SerializeField]
     private EnumConst.BulletDirection bulletDirection;
     void Start()
     {
+        Init();
+    }
+    private void Init()
+    {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        isRolling = false;
+        isDragging = false;
+        isAlive = true;
+        currentHP = maxHP;
+        healthBar.UpdateHealthBar(currentHP / maxHP);
         StartCoroutine(Roll());
     }
 
@@ -58,7 +69,6 @@ public class Dice : MonoBehaviour
             StartCoroutine(RollDiceCoroutine());
         }
     }
-
     IEnumerator RollDiceCoroutine()
     {
         isRolling = true;
@@ -102,7 +112,6 @@ public class Dice : MonoBehaviour
         ResetDice();
         StartCoroutine(Roll());
     }
-
     IEnumerator Fire(int amount)
     {
         //Delay giữa các viên đạn nhìn cho dễ
@@ -115,9 +124,31 @@ public class Dice : MonoBehaviour
             bullet.GetComponent<Bullet>().Fire(bulletDirection, bulletSpeed, bulletDamage);
         }
     }
+    public void TakeDamage(float damage)
+    {
+        currentHP -= damage;
+        healthBar.UpdateHealthBar(currentHP / maxHP);
+
+        spriteRenderer.DOColor(Color.white, 0.05f).OnComplete(() => 
+        {
+            spriteRenderer.DOColor(Color.red, 0.05f).OnComplete(() => 
+            {
+                spriteRenderer.DOColor(Color.white, 0.05f);
+            });
+        });
 
 
-    void OnMouseDrag()
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+    }
+    private void Die()
+    {
+        isAlive = false;
+        Destroy(gameObject);
+    }
+    private void OnMouseDrag()
     {
         isDragging = true;
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -126,7 +157,7 @@ public class Dice : MonoBehaviour
 
         GridManager.Instance.TryPlaceDice(this, transform.position);
     }
-    void OnMouseUp()
+    private void OnMouseUp()
     {
         isDragging = false;
         ResetDice();
