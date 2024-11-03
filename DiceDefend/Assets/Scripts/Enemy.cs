@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private HealthBar healthBar;
     [SerializeField]
-    private float maxHP, currentHP, moveSpeed, coinEarn, damage, detectionRange, attackSpeed, attackRange;
+    private float maxHP, currentHP, moveSpeed, coinEarn, damage, detectionRange, attackSpeed, attackRange, reward;
     private Transform target, king;
     private bool isAlive, isAttacking;
 
@@ -60,7 +60,7 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         isAlive = false;
-        //GameManager.Instance.AddMoney(rewardMoney);
+        EnemyManager.Instance.OnEnemyDie(reward);
         Destroy(gameObject);
     }
 

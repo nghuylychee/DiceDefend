@@ -23,10 +23,6 @@ public class Dice : MonoBehaviour
     [SerializeField]
     private EnumConst.BulletDirection bulletDirection;
     private Transform target;
-    void Start()
-    {
-        Init();
-    }
     public void Init()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();

@@ -1,11 +1,13 @@
 using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using System;
 
 public class EnemyManager : MonoBehaviour
 {
     public static EnemyManager Instance;
-
+    public event Action<float> OnWaveSpawn, OnWaveClear;
+    public event Action<float> OnEnemyKilled;
 
     [SerializeField]
     private GameObject enemyPrefab;
@@ -13,7 +15,7 @@ public class EnemyManager : MonoBehaviour
     private Transform[] spawnPoints;
 
     [SerializeField]
-    private float enemiesPerWave, timeBetweenSpawns, currentWave, randX, randY;
+    private float enemyPerWave, currentEnemy, timeBetweenSpawns, currentWave, randX, randY;
 
     void Awake() 
     {
@@ -21,29 +23,36 @@ public class EnemyManager : MonoBehaviour
     }
     public void Init()
     {
-        // enemiesPerWave = 5; timeBetweenSpawns = 1f; currentWave = 0;
+        currentWave = 0;
     }
+    
     [Button("Spawn Wave")]
     public void SpawnWave()
     {
+        currentWave++;
+        currentEnemy = enemyPerWave;
         StartCoroutine(SpawnEnemies());
     }
-
     private IEnumerator SpawnEnemies()
     {
-        for (int i = 0; i < enemiesPerWave; i++)
+        OnWaveSpawn?.Invoke(currentWave);
+        for (int i = 0; i < enemyPerWave; i++)
         {
-            SpawnEnemy();
+            int randomIndex = UnityEngine.Random.Range(0, spawnPoints.Length);
+            Transform spawnPoint = spawnPoints[randomIndex];
+            var pos = spawnPoint.position + new Vector3(UnityEngine.Random.Range(-randX, randX), UnityEngine.Random.Range(-randY, randY));
+            Instantiate(enemyPrefab, pos, Quaternion.identity);
             yield return new WaitForSeconds(timeBetweenSpawns);
         }
     }
-
-    private void SpawnEnemy()
+    public void OnEnemyDie(float enemyReward)
     {
-        int randomIndex = Random.Range(0, spawnPoints.Length);
-        Transform spawnPoint = spawnPoints[randomIndex];
-        spawnPoint.position += new Vector3(Random.Range(-randX, randX), Random.Range(-randY, randY));
-
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        currentEnemy--;
+        OnEnemyKilled?.Invoke(enemyReward);
+        if (currentEnemy <= 0)
+        {
+            OnWaveClear?.Invoke(currentWave);
+        }
     }
+
 }

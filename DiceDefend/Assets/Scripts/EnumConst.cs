@@ -11,5 +11,13 @@ public static class EnumConst
         Up,
         Down
     }
+    public enum GameState
+    {
+        MainMenu,
+        Init,
+        InGame,
+        Paused,
+        EndGame,
+    }
 
 }
