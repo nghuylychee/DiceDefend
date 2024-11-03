@@ -8,6 +8,7 @@ TagManager:
   - King
   - Bullet
   - Enemy
+  - Dice
   layers:
   - Default
   - TransparentFX

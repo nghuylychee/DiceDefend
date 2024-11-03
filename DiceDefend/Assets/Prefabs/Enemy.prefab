@@ -346,10 +346,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 5139426172551948766}
-  maxHP: 10
+  maxHP: 5
   currentHP: 0
-  moveSpeed: 0.1
+  moveSpeed: 0.3
   coinEarn: 0
+  damage: 1
+  detectionRange: 0.1
+  attackSpeed: 3
+  attackRange: 0.1
 --- !u!1 &4036946122955630085
 GameObject:
   m_ObjectHideFlags: 0
