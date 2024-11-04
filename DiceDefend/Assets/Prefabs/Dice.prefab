@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9cd387c625aa734fa436b1a9b96681f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DiceID: 0
+  cooldownImage: {fileID: 4411631661726802516}
   diceSprites:
   - {fileID: -1596459500, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}
   - {fileID: 180135825, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}
@@ -106,11 +108,10 @@ MonoBehaviour:
   - {fileID: 764819834, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}
   - {fileID: -103445150, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}
   - {fileID: 1704177650, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}
-  cooldownImage: {fileID: 4411631661726802516}
   numberText: {fileID: 6068794500361141776}
   healthBar: {fileID: 8966580215445625907}
-  rollDuration: 0.25
-  rollInterval: 1
+  rollDuration: 0.1
+  rollInterval: 0.5
   bulletSpeed: 1
   bulletDamage: 1
   currentHP: 0
@@ -225,7 +226,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.1790309, g: 0.6855345, b: 0.02802487, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -336,7 +337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 0.7294118}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -447,7 +448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -600,7 +601,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1527640478640049985}
   m_FillRect: {fileID: 9123496175784803969}
   m_HandleRect: {fileID: 0}
@@ -671,7 +672,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -900,7 +901,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

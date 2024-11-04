@@ -6,9 +6,11 @@ using TMPro;
 
 public class Dice : MonoBehaviour
 {
-    public Sprite[] diceSprites;
+    public int DiceID;
     [SerializeField]
-    public Image cooldownImage;
+    private Image cooldownImage;
+    [SerializeField]
+    private Sprite[] diceSprites;
     private SpriteRenderer spriteRenderer;
     [SerializeField]
     private TextMeshProUGUI numberText;
@@ -23,8 +25,12 @@ public class Dice : MonoBehaviour
     [SerializeField]
     private EnumConst.BulletDirection bulletDirection;
     private Transform target;
-    public void Init()
+    public void Init(int id)
     {
+        DiceID = id;
+        diceSprites = DiceManager.Instance.diceConfig[DiceID].DiceSprite.ToArray();
+        //Init thêm field cho dice trong tương lai
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         isRolling = false;
         isDragging = false;
@@ -117,16 +123,15 @@ public class Dice : MonoBehaviour
 
         //Delay giữa các viên đạn nhìn cho dễ
         float bulletDelay = 0.5f;
-
-        for (int i = 0; i < amount; i++)
+        if (target)
         {
-            yield return new WaitForSeconds(bulletDelay);
-            GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+            for (int i = 0; i < amount; i++)
+            {
+                yield return new WaitForSeconds(bulletDelay);
+                GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
 
-            if (target)
                 bullet.GetComponent<Bullet>().Fire(target, bulletSpeed, bulletDamage);
-            else
-                bullet.GetComponent<Bullet>().Fire(bulletDirection, bulletSpeed, bulletDamage);
+            }
         }
     }
     private void FindTarget()

@@ -50,10 +50,19 @@ public class GameManager : MonoBehaviour
         EnemyManager.Instance.OnWaveClear += SpawnWave;
         
         PlayerManager.Instance.OnWaveUpdate += UIManager.Instance.UpdateUIWave;
-        PlayerManager.Instance.OnGoldUpdate += UIManager.Instance.UpdateUIGold;
-        PlayerManager.Instance.OnGoldUpdate += ShopManager.Instance.UpdateRollButton;
+        PlayerManager.Instance.OnGoldUpdate += (currentGold) =>
+        {
+            UIManager.Instance.UpdateUIGold(currentGold);
+            ShopManager.Instance.CheckRollPrice(currentGold);
+            ShopManager.Instance.CheckShopItemPrice(currentGold);
+        };
 
         ShopManager.Instance.OnRollComplete += PlayerManager.Instance.UpdateGold;
+        ShopManager.Instance.OnShopItemBuy += (diceID, dicePrice) => 
+        {
+            PlayerManager.Instance.UpdateGold(dicePrice); 
+            DiceManager.Instance.AddDice(diceID);
+        };
 
         DiceManager.Instance.Init();
         EnemyManager.Instance.Init();

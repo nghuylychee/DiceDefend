@@ -73,7 +73,7 @@ public class Enemy : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            if (hit.CompareTag("Dice"))
+            if (hit.CompareTag("Dice") || hit.CompareTag("King"))
             {
                 float distance = Vector2.Distance(transform.position, hit.transform.position);
                 if (distance < closestDistance)
