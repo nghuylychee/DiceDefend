@@ -7,6 +7,8 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance;
     public event Action<float> OnWaveUpdate, OnGoldUpdate;
+    public float CurrentGold {get{return currentGold;}}
+    public float CurrentWave {get{return currentWave;}}
 
     [SerializeField]
     private float currentGold, currentWave;

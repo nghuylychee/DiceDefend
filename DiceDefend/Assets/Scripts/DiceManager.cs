@@ -9,6 +9,8 @@ public class DiceManager : MonoBehaviour
     
     [SerializeField]
     private List<Dice> diceList = new List<Dice>();
+    [SerializeField]
+    public List<DiceConfig> diceConfig = new List<DiceConfig>();
     private void Awake() 
     {
         Instance = this;    

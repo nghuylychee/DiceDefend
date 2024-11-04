@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
     [SerializeField]
     private TextMeshProUGUI UIGold, UIWave;
+    [SerializeField]
+    
     private void Awake() 
     {
         Instance = this;    

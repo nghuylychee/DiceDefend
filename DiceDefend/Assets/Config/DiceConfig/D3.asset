@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dd821202a06b1f4c9f72bdf74e0a9e1, type: 3}
+  m_Name: D3
+  m_EditorClassIdentifier: 
+  ID: 1
+  Icon: {fileID: -1055952151, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}
+  DiceName: D3
+  DiceDesc: Random (1-3)
+  Price: 2
+  DiceSprite:
+  - {fileID: -1596459500, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}
+  - {fileID: 180135825, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}
+  - {fileID: -1055952151, guid: 9e32f67b8ad76f2499754c9831de04b6, type: 3}

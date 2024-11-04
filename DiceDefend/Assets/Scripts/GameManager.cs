@@ -51,11 +51,15 @@ public class GameManager : MonoBehaviour
         
         PlayerManager.Instance.OnWaveUpdate += UIManager.Instance.UpdateUIWave;
         PlayerManager.Instance.OnGoldUpdate += UIManager.Instance.UpdateUIGold;
+        PlayerManager.Instance.OnGoldUpdate += ShopManager.Instance.UpdateRollButton;
+
+        ShopManager.Instance.OnRollComplete += PlayerManager.Instance.UpdateGold;
 
         DiceManager.Instance.Init();
         EnemyManager.Instance.Init();
         PlayerManager.Instance.Init();
         UIManager.Instance.Init();
+        ShopManager.Instance.Init();
 
         ChangeState(EnumConst.GameState.InGame);
     }
