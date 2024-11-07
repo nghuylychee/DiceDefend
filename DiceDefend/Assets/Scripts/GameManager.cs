@@ -64,11 +64,12 @@ public class GameManager : MonoBehaviour
             DiceManager.Instance.AddDice(diceID);
         };
 
+        GridManager.Instance.Init();
+        ShopManager.Instance.Init();
         DiceManager.Instance.Init();
         EnemyManager.Instance.Init();
-        PlayerManager.Instance.Init();
         UIManager.Instance.Init();
-        ShopManager.Instance.Init();
+        PlayerManager.Instance.Init();
 
         ChangeState(EnumConst.GameState.InGame);
     }

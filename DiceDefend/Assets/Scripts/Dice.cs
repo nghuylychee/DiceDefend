@@ -38,6 +38,8 @@ public class Dice : MonoBehaviour
         currentHP = maxHP;
         target = null;
         healthBar.UpdateHealthBar(currentHP / maxHP);
+        GridManager.Instance.PlaceDice(this, 0, 0);
+
         StartCoroutine(Roll());
     }
 
