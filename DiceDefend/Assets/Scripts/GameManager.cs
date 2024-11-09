@@ -46,16 +46,21 @@ public class GameManager : MonoBehaviour
     {
         //Subscribe to events
         EnemyManager.Instance.OnWaveSpawn += PlayerManager.Instance.UpdateWave;
-        EnemyManager.Instance.OnEnemyKilled += PlayerManager.Instance.UpdateGold;
+        EnemyManager.Instance.OnEnemyKilled += (goldEarn, enemyPos) =>
+        { 
+            PlayerManager.Instance.UpdateGold(goldEarn);
+            FXManager.Instance.PlayEffectGainResource(goldEarn, enemyPos);
+        };
         EnemyManager.Instance.OnWaveClear += SpawnWave;
         
         PlayerManager.Instance.OnWaveUpdate += UIManager.Instance.UpdateUIWave;
         PlayerManager.Instance.OnGoldUpdate += (currentGold) =>
         {
             UIManager.Instance.UpdateUIGold(currentGold);
-            ShopManager.Instance.CheckRollPrice(currentGold);
+            // ShopManager.Instance.CheckRollPrice(currentGold);
             ShopManager.Instance.CheckShopItemPrice(currentGold);
         };
+        PlayerManager.Instance.OnRoll += DiceManager.Instance.RollDice;
 
         ShopManager.Instance.OnRollComplete += PlayerManager.Instance.UpdateGold;
         ShopManager.Instance.OnShopItemBuy += (diceID, dicePrice) => 
@@ -70,6 +75,7 @@ public class GameManager : MonoBehaviour
         EnemyManager.Instance.Init();
         UIManager.Instance.Init();
         PlayerManager.Instance.Init();
+        FXManager.Instance.Init();
 
         ChangeState(EnumConst.GameState.InGame);
     }

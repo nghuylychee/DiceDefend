@@ -32,7 +32,7 @@ public class GridManager : MonoBehaviour
         {
             for (int x = 0; x < gridWidth; x++)
             {
-                Vector3 cellPosition = new Vector3(startPosition.x + x * cellSize, (gridHeight - y - 1) * cellSize - startPosition.y, 0);
+                Vector3 cellPosition = new Vector3(startPosition.x + x * cellSize, (gridHeight - y) * cellSize - startPosition.y, 0);
                 var cell = Instantiate(cellPrefab, cellPosition, Quaternion.identity);
                 cell.GetComponent<Cell>().Init(x, y);
                 cell.transform.SetParent(this.transform);
@@ -63,7 +63,6 @@ public class GridManager : MonoBehaviour
     {
         if (targetCell)
         {
-            Debug.Log(targetCell.GridX + "-" + targetCell.GridY);
             targetCell.OnOccupy();
             dice.transform.position = targetCell.transform.position;
         }

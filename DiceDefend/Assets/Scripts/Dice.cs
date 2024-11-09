@@ -6,7 +6,8 @@ using TMPro;
 
 public class Dice : MonoBehaviour
 {
-    public int DiceID;
+    public int DiceTypeID;
+    public bool IsAlive {get {return isAlive;}}
     [SerializeField]
     private Image cooldownImage;
     [SerializeField]
@@ -27,8 +28,8 @@ public class Dice : MonoBehaviour
     private Transform target;
     public void Init(int id)
     {
-        DiceID = id;
-        diceSprites = DiceManager.Instance.diceConfig[DiceID].DiceSprite.ToArray();
+        DiceTypeID = id;
+        diceSprites = DiceManager.Instance.diceConfig[DiceTypeID].DiceSprite.ToArray();
         //Init thêm field cho dice trong tương lai
 
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -38,9 +39,10 @@ public class Dice : MonoBehaviour
         currentHP = maxHP;
         target = null;
         healthBar.UpdateHealthBar(currentHP / maxHP);
-        GridManager.Instance.PlaceDice(this, 0, 0);
+        cooldownImage.fillAmount = 0;
 
-        StartCoroutine(Roll());
+        GridManager.Instance.PlaceDice(this, 0, 0);
+        // StartCoroutine(Roll());
     }
 
     IEnumerator Roll()
@@ -64,7 +66,7 @@ public class Dice : MonoBehaviour
     public void ResetDice()
     {
         StopAllCoroutines();
-        cooldownImage.fillAmount = 1;
+        cooldownImage.fillAmount = 0;
         transform.eulerAngles = Vector3.zero;
         isRolling = false;
     }
@@ -116,7 +118,7 @@ public class Dice : MonoBehaviour
 
         //Đợi bắn xong mới reset và roll tiếp
         ResetDice();
-        StartCoroutine(Roll());
+        // StartCoroutine(Roll());
     }
     IEnumerator Fire(int amount)
     {
@@ -127,6 +129,7 @@ public class Dice : MonoBehaviour
         float bulletDelay = 0.5f;
         if (target)
         {
+            cooldownImage.fillAmount = 1;
             for (int i = 0; i < amount; i++)
             {
                 yield return new WaitForSeconds(bulletDelay);
@@ -181,7 +184,7 @@ public class Dice : MonoBehaviour
     private void Die()
     {
         isAlive = false;
-        Destroy(gameObject);
+        DiceManager.Instance.RemoveDice();
     }
     private void OnMouseDrag()
     {
@@ -196,7 +199,7 @@ public class Dice : MonoBehaviour
     {
         isDragging = false;
         ResetDice();
-        StartCoroutine(Roll());
+        // StartCoroutine(Roll());
         GridManager.Instance.PlaceDice(this);
     }
 }

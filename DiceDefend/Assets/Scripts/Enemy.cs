@@ -60,7 +60,7 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         isAlive = false;
-        EnemyManager.Instance.OnEnemyDie(reward);
+        EnemyManager.Instance.OnEnemyDie(reward, this.transform.position);
         Destroy(gameObject);
     }
 

@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance;
     public event Action<float> OnWaveUpdate, OnGoldUpdate;
+    public event Action OnRoll;
     public float CurrentGold {get{return currentGold;}}
     public float CurrentWave {get{return currentWave;}}
 
@@ -18,7 +19,8 @@ public class PlayerManager : MonoBehaviour
     }
     public void Init()
     {
-        currentGold = 0; currentWave = 0;
+        // currentGold = 0; 
+        currentWave = 0;
         OnGoldUpdate?.Invoke(currentGold);
         OnWaveUpdate?.Invoke(currentWave);
     }
@@ -31,6 +33,10 @@ public class PlayerManager : MonoBehaviour
     {
         currentWave = waveCount;
         OnWaveUpdate?.Invoke(currentWave);
+    }
+    public void RollDice()
+    {
+        OnRoll?.Invoke();
     }
 
 }

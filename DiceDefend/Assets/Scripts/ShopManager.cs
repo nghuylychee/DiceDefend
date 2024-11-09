@@ -86,8 +86,6 @@ public class ShopManager : MonoBehaviour
         {
             var diceID = item.itemDiceID;
             var diceTypeData = DiceManager.Instance.diceConfig[diceID];
-
-            print(diceTypeData.Price);
             if (playerCurrentGold >= diceTypeData.Price)
             {
                 item.buttonItemIcon.interactable = true;

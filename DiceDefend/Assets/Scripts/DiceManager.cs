@@ -22,7 +22,7 @@ public class DiceManager : MonoBehaviour
         diceList = GetComponentsInChildren<Dice>().ToList();
         foreach (var dice in diceList)
         {
-            dice.Init(dice.DiceID);
+            dice.Init(dice.DiceTypeID);
         }
     }
     public void AddDice(int diceID)
@@ -32,5 +32,24 @@ public class DiceManager : MonoBehaviour
         dice.transform.SetParent(this.transform);
         diceList.Add(dice.GetComponent<Dice>());
         dice.GetComponent<Dice>().Init(diceID);
+    }
+    public void RollDice()
+    {
+        foreach (var dice in diceList)
+        {
+            dice.RollDice();
+        }
+    }
+    public void RemoveDice()
+    {
+        for(int i = 0; i < diceList.Count; ++i)
+        {
+            if (!diceList[i].IsAlive)
+            {
+                var dice = diceList[i];
+                diceList.RemoveAt(i);
+                GameObject.Destroy(dice.gameObject);
+            }
+        }
     }
 }

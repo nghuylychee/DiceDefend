@@ -19,5 +19,9 @@ public static class EnumConst
         Paused,
         EndGame,
     }
+    public enum CurrencyType
+    {
+        Gold,
+    }
 
 }
