@@ -21,6 +21,10 @@ public class Cell : MonoBehaviour
     {
         GetComponent<SpriteRenderer>().color = selectedColor;
     }
+    public void OnDeSelected()
+    {
+        GetComponent<SpriteRenderer>().color = normalColor;
+    }
 
     public void OnRelease()
     {

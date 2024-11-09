@@ -28,7 +28,6 @@ public class FXManager : MonoBehaviour
         {
             if (!fx.isPlaying)
             {
-                Debug.Log("zzz");
                 fx.PlayEffect(uiStartPos, value, EnumConst.CurrencyType.Gold);
                 return;
             }

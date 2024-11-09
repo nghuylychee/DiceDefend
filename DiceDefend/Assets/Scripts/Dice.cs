@@ -3,29 +3,29 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using TMPro;
+using Sirenix.OdinInspector;
 
 public class Dice : MonoBehaviour
 {
     public int DiceTypeID;
     public bool IsAlive {get {return isAlive;}}
-    [SerializeField]
-    private Image cooldownImage;
-    [SerializeField]
+    public int GridX, GridY;
+    [SerializeField]    
     private Sprite[] diceSprites;
+    private Transform target;
     private SpriteRenderer spriteRenderer;
-    [SerializeField]
+    [FoldoutGroup("References")] [SerializeField]
+    private Image cooldownImage;
+    [FoldoutGroup("References")] [SerializeField]
     private TextMeshProUGUI numberText;
-    [SerializeField]
+    [FoldoutGroup("References")] [SerializeField]
     private HealthBar healthBar;
-    [SerializeField]
+    [FoldoutGroup("References")] [SerializeField]
+    private GameObject bulletPrefab;
+    [FoldoutGroup("Dice Stat")] [SerializeField]
     private float rollDuration, rollInterval, bulletSpeed, bulletDamage, currentHP, maxHP, detectionRange;
     [SerializeField]
-    private GameObject bulletPrefab;
-    [SerializeField]
     private bool isRolling, isDragging, isAlive;
-    [SerializeField]
-    private EnumConst.BulletDirection bulletDirection;
-    private Transform target;
     public void Init(int id)
     {
         DiceTypeID = id;
@@ -40,8 +40,6 @@ public class Dice : MonoBehaviour
         target = null;
         healthBar.UpdateHealthBar(currentHP / maxHP);
         cooldownImage.fillAmount = 0;
-
-        GridManager.Instance.PlaceDice(this, 0, 0);
         // StartCoroutine(Roll());
     }
 
@@ -188,18 +186,19 @@ public class Dice : MonoBehaviour
     }
     private void OnMouseDrag()
     {
+        Debug.Log("Dragging");
         isDragging = true;
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
         transform.position = mousePosition;
 
-        GridManager.Instance.TryPlaceDice(this, transform.position);
+        GridManager.Instance.CheckTargetGrid(this, transform.position);
     }
     private void OnMouseUp()
     {
         isDragging = false;
         ResetDice();
         // StartCoroutine(Roll());
-        GridManager.Instance.PlaceDice(this);
+        GridManager.Instance.PlaceDiceByTarget(this);
     }
 }

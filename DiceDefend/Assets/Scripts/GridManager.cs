@@ -12,7 +12,7 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     private int gridWidth, gridHeight;
     [SerializeField]
-    private float cellSize = 0.5f;
+    private float cellSize;
     private Cell targetCell = null;
 
     void Awake() 
@@ -41,9 +41,9 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public void TryPlaceDice(Dice dice, Vector3 position)
+    public void CheckTargetGrid(Dice dice, Vector3 position)
     {
-        targetCell?.OnRelease();
+        targetCell?.OnDeSelected();
         Collider2D[] hits = Physics2D.OverlapPointAll(position);
         foreach (var hit in hits)
         {
@@ -59,12 +59,15 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-    public void PlaceDice(Dice dice)
+    public void PlaceDiceByTarget(Dice dice)
     {
+        var currentGridX = dice.GridX;
+        var currentGridY = dice.GridY;
+        
         if (targetCell)
         {
-            targetCell.OnOccupy();
-            dice.transform.position = targetCell.transform.position;
+            CellGrid[currentGridX, currentGridY].OnRelease();
+            PlaceDice(dice, targetCell.GridX, targetCell.GridY);
         }
         else
         {
@@ -73,10 +76,35 @@ public class GridManager : MonoBehaviour
     }
     public void PlaceDice(Dice dice, int gridX, int gridY)
     {
-        dice.transform.position = CellGrid[gridX, gridY].transform.position;
+        if (!CellGrid[gridX, gridY].isOccupied)
+        {
+            CellGrid[gridX, gridY].OnOccupy();
+            dice.GridX = gridX;
+            dice.GridY = gridY;
+            dice.transform.position = CellGrid[gridX, gridY].transform.position;
+        }
+        else
+        {
+            Debug.Log("Not available, trying to place at the nearest cell!");
+            for (int y = 0; y < gridHeight; y++)
+            {
+                for (int x = 0; x < gridWidth; x++)
+                {
+                    if (!CellGrid[x, y].isOccupied)
+                    {
+                        Debug.Log(x + "-" + y);
+                        CellGrid[x, y].OnOccupy();
+                        dice.GridX = x;
+                        dice.GridY = y;
+                        dice.transform.position = CellGrid[x, y].transform.position;
+                        return;
+                    }
+                }
+            }
+        }
     }
-    public bool IsSameCell(Cell cellA, Cell cellB)
+    public void ReleaseGrid(int gridX, int gridY)
     {
-        return (cellA.GridX == cellB.GridX) && (cellA.GridY == cellB.GridY);
+        CellGrid[gridX, gridY].OnRelease();
     }
 }

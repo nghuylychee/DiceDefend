@@ -69,6 +69,15 @@ public class GameManager : MonoBehaviour
             DiceManager.Instance.AddDice(diceID);
         };
 
+        DiceManager.Instance.OnDiceSpawn += (dice) =>
+        {
+            GridManager.Instance.PlaceDice(dice, 0, 0);
+        };
+        DiceManager.Instance.OnDiceDie += (dice) =>
+        {
+            GridManager.Instance.ReleaseGrid(dice.GridX, dice.GridY);
+        };
+
         GridManager.Instance.Init();
         ShopManager.Instance.Init();
         DiceManager.Instance.Init();

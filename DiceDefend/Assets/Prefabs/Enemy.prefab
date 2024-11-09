@@ -348,7 +348,7 @@ MonoBehaviour:
   healthBar: {fileID: 3782708117653642043}
   maxHP: 5
   currentHP: 0
-  moveSpeed: 0.3
+  moveSpeed: 0.2
   coinEarn: 0
   damage: 1
   detectionRange: 1
