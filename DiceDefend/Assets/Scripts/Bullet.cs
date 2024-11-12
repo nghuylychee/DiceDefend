@@ -44,7 +44,8 @@ public class Bullet : MonoBehaviour
         {
             this.bulletDamage = bulletDamage;
             var rb = this.GetComponent<Rigidbody2D>();
-            Vector3 direction = (target.position - transform.position).normalized;
+            // Vector3 direction = (target.position - transform.position).normalized;
+            Vector3 direction = Vector3.right;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle-180);
             rb.velocity = direction * bulletSpeed;

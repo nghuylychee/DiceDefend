@@ -17,6 +17,13 @@ public class PlayerManager : MonoBehaviour
     {
         Instance = this;
     }
+    private void Update() 
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            RollDice();
+        }
+    }
     public void Init()
     {
         // currentGold = 0; 

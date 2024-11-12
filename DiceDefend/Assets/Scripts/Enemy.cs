@@ -66,42 +66,50 @@ public class Enemy : MonoBehaviour
 
     private void FindTarget()
     {
-        // Tìm Dice trong tầm phát hiện, giả định Dice có tag là "Dice"
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRange);
         Transform closestDice = null;
         float closestDistance = detectionRange;
 
+        // Gửi Raycast từ enemy theo chiều ngang (giả sử tấn công hướng sang phải)
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.left, detectionRange);
+
         foreach (var hit in hits)
         {
-            if (hit.CompareTag("Dice") || hit.CompareTag("King"))
+            if (hit.collider.CompareTag("Dice") || hit.collider.CompareTag("King"))
             {
-                float distance = Vector2.Distance(transform.position, hit.transform.position);
-                if (distance < closestDistance)
+                // Kiểm tra xem mục tiêu có trong cùng lane không (y gần bằng enemy y)
+                if (Mathf.Abs(hit.collider.transform.position.y - transform.position.y) < 0.05f)
                 {
-                    closestDistance = distance;
-                    closestDice = hit.transform;
+                    float distance = Vector2.Distance(transform.position, hit.collider.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestDice = hit.collider.transform;
+                    }
                 }
             }
         }
 
-        // Nếu có Dice trong tầm thì chọn Dice làm mục tiêu, ngược lại chọn King
+        // Nếu tìm thấy Dice trong cùng lane thì target là Dice, nếu không thì target King
         target = closestDice != null ? closestDice : king;
     }
+
 
     private void MoveToTarget()
     {
         if (target == null) return;
-        
-        // Di chuyển về phía mục tiêu
-        transform.position = Vector2.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
+
+        // Giữ nguyên vị trí y, chỉ di chuyển theo trục x về phía mục tiêu
+        Vector3 targetPosition = new Vector3(target.position.x, transform.position.y, transform.position.z);
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
         // Kiểm tra nếu đã tới gần mục tiêu
-        float distanceToTarget = Vector2.Distance(transform.position, target.position);
+        float distanceToTarget = Mathf.Abs(transform.position.x - target.position.x);
         if (distanceToTarget <= attackRange)
         {
             StartCoroutine(AttackTarget());
         }
     }
+
 
     private IEnumerator AttackTarget()
     {

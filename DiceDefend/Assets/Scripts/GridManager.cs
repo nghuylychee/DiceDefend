@@ -32,7 +32,7 @@ public class GridManager : MonoBehaviour
         {
             for (int x = 0; x < gridWidth; x++)
             {
-                Vector3 cellPosition = new Vector3(startPosition.x + x * cellSize, (gridHeight - y) * cellSize - startPosition.y, 0);
+                Vector3 cellPosition = new Vector3(startPosition.x + x * cellSize, (gridHeight - y) * cellSize - startPosition.y, 1);
                 var cell = Instantiate(cellPrefab, cellPosition, Quaternion.identity);
                 cell.GetComponent<Cell>().Init(x, y);
                 cell.transform.SetParent(this.transform);
@@ -81,23 +81,33 @@ public class GridManager : MonoBehaviour
             CellGrid[gridX, gridY].OnOccupy();
             dice.GridX = gridX;
             dice.GridY = gridY;
-            dice.transform.position = CellGrid[gridX, gridY].transform.position;
+
+            var pos = CellGrid[gridX, gridY].transform.position;
+            dice.transform.position = new Vector3(pos.x, pos.y, 0);
         }
         else
         {
-            Debug.Log("Not available, trying to place at the nearest cell!");
-            for (int y = 0; y < gridHeight; y++)
+            if (dice.GridX != -1 && dice.GridY != -1)
             {
-                for (int x = 0; x < gridWidth; x++)
+                Debug.Log("Back to old grid");
+                dice.transform.position = CellGrid[dice.GridX, dice.GridY].transform.position;
+            }
+            else
+            {
+                Debug.Log("Not available, trying to place at the nearest cell!");
+                for (int y = 0; y < gridHeight; y++)
                 {
-                    if (!CellGrid[x, y].isOccupied)
+                    for (int x = 0; x < gridWidth; x++)
                     {
-                        Debug.Log(x + "-" + y);
-                        CellGrid[x, y].OnOccupy();
-                        dice.GridX = x;
-                        dice.GridY = y;
-                        dice.transform.position = CellGrid[x, y].transform.position;
-                        return;
+                        if (!CellGrid[x, y].isOccupied)
+                        {
+                            Debug.Log(x + "-" + y);
+                            CellGrid[x, y].OnOccupy();
+                            dice.GridX = x;
+                            dice.GridY = y;
+                            dice.transform.position = CellGrid[x, y].transform.position;
+                            return;
+                        }
                     }
                 }
             }

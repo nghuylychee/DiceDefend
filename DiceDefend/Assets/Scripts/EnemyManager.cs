@@ -31,7 +31,7 @@ public class EnemyManager : MonoBehaviour
     public void SpawnWave()
     {
         currentWave++;
-        enemyPerWave = Mathf.RoundToInt(enemyPerWave * enemyIncreasePerWave);
+        enemyPerWave = Mathf.RoundToInt(1 * Mathf.Pow(enemyIncreasePerWave, currentWave - 1));
         currentEnemy = enemyPerWave;
         StartCoroutine(SpawnEnemies());
     }

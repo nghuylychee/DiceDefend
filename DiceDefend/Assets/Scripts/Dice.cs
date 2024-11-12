@@ -32,6 +32,7 @@ public class Dice : MonoBehaviour
         diceSprites = DiceManager.Instance.dicePool[DiceTypeID].DiceSprite.ToArray();
         //Init thêm field cho dice trong tương lai
 
+        GridX = -1; GridY = -1;
         spriteRenderer = GetComponent<SpriteRenderer>();
         isRolling = false;
         isDragging = false;
@@ -140,19 +141,22 @@ public class Dice : MonoBehaviour
     private void FindTarget()
     {
         // Tìm Dice trong tầm phát hiện, giả định Dice có tag là "Dice"
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRange);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.right, detectionRange);
         Transform closestEnemy = null;
         float closestDistance = detectionRange;
 
         foreach (var hit in hits)
         {
-            if (hit.CompareTag("Enemy"))
+            if (hit.collider.CompareTag("Enemy"))
             {
-                float distance = Vector2.Distance(transform.position, hit.transform.position);
-                if (distance < closestDistance)
+                if (Mathf.Abs(hit.collider.transform.position.y - transform.position.y) < 0.05f) 
                 {
-                    closestDistance = distance;
-                    closestEnemy = hit.transform;
+                    float distance = Vector2.Distance(transform.position, hit.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestEnemy = hit.transform;
+                    }
                 }
             }
         }
