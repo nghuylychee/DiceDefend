@@ -8,13 +8,14 @@ public class DiceManager : MonoBehaviour
 {
     public static DiceManager Instance;
     public event Action<Dice> OnDiceSpawn, OnDiceDie;
+    public event Action OnUpdateDicePool;
     
     [SerializeField]
     private GameObject dicePrefab;
     [SerializeField]
     private List<Dice> diceList = new List<Dice>();
     [SerializeField]
-    public List<DiceConfig> diceConfig = new List<DiceConfig>();
+    public List<DiceConfig> dicePool = new List<DiceConfig>();
     private void Awake() 
     {
         Instance = this;    
@@ -56,5 +57,9 @@ public class DiceManager : MonoBehaviour
                 GameObject.Destroy(dice.gameObject);
             }
         }
+    }
+    public void UpdateDicePool()
+    {
+        OnUpdateDicePool?.Invoke();
     }
 }

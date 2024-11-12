@@ -40,7 +40,7 @@ public class ShopManager : MonoBehaviour
         {
             item.Init();
         }
-        RollShopItem();
+        UpdateShopItem();
     }
     public void ToggleShop() 
     {
@@ -65,19 +65,12 @@ public class ShopManager : MonoBehaviour
             buttonRoll.interactable = false;
         }
     }
-    public void Roll()
+    public void UpdateShopItem()
     {
-        RollShopItem();
-        OnRollComplete?.Invoke(-rollPrice);
-    }
-    private void RollShopItem()
-    {
-        foreach (var item in shopItemList)
+        for (int i = 0; i < DiceManager.Instance.dicePool.Count; ++i)
         {
-            //Random a dice type in config -- TODO: Update mechanic roll
-            var diceID = UnityEngine.Random.Range(0, DiceManager.Instance.diceConfig.Count);
-            var diceTypeData = DiceManager.Instance.diceConfig[diceID];
-            item.UpdateItem(diceID, diceTypeData.DiceName, diceTypeData.DiceDesc, diceTypeData.Price, diceTypeData.Icon);
+            var diceTypeData = DiceManager.Instance.dicePool[i];
+            shopItemList[i].UpdateItem(i, diceTypeData.DiceName, diceTypeData.DiceDesc, diceTypeData.Price, diceTypeData.Icon);
         }
     }
     public void CheckShopItemPrice(float playerCurrentGold)
@@ -85,7 +78,7 @@ public class ShopManager : MonoBehaviour
         foreach (var item in shopItemList)
         {
             var diceID = item.itemDiceID;
-            var diceTypeData = DiceManager.Instance.diceConfig[diceID];
+            var diceTypeData = DiceManager.Instance.dicePool[diceID];
             if (playerCurrentGold >= diceTypeData.Price)
             {
                 item.buttonItemIcon.interactable = true;
@@ -99,7 +92,7 @@ public class ShopManager : MonoBehaviour
     public void BuyShopItem(int shopItemID)
     {
         var diceID = shopItemList[shopItemID].itemDiceID;
-        var dicePrice = DiceManager.Instance.diceConfig[diceID].Price;
+        var dicePrice = DiceManager.Instance.dicePool[diceID].Price;
 
         OnShopItemBuy?.Invoke(diceID, -dicePrice);
     }

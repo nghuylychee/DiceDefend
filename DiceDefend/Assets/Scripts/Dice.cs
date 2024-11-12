@@ -29,7 +29,7 @@ public class Dice : MonoBehaviour
     public void Init(int id)
     {
         DiceTypeID = id;
-        diceSprites = DiceManager.Instance.diceConfig[DiceTypeID].DiceSprite.ToArray();
+        diceSprites = DiceManager.Instance.dicePool[DiceTypeID].DiceSprite.ToArray();
         //Init thêm field cho dice trong tương lai
 
         spriteRenderer = GetComponent<SpriteRenderer>();

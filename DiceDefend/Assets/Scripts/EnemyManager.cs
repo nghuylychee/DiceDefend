@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using System;
+using Unity.VisualScripting;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -14,8 +15,8 @@ public class EnemyManager : MonoBehaviour
     [SerializeField]
     private Transform[] spawnPoints;
 
-    [SerializeField]
-    private float enemyPerWave, currentEnemy, timeBetweenSpawns, currentWave, randX, randY;
+    [FoldoutGroup("Wave Config")] [SerializeField]
+    private float enemyPerWave, enemyIncreasePerWave, currentEnemy, timeBetweenSpawns, currentWave, randX, randY;
 
     void Awake() 
     {
@@ -30,6 +31,7 @@ public class EnemyManager : MonoBehaviour
     public void SpawnWave()
     {
         currentWave++;
+        enemyPerWave = Mathf.RoundToInt(enemyPerWave * enemyIncreasePerWave);
         currentEnemy = enemyPerWave;
         StartCoroutine(SpawnEnemies());
     }

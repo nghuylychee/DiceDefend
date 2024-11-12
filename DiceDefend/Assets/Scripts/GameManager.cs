@@ -57,7 +57,6 @@ public class GameManager : MonoBehaviour
         PlayerManager.Instance.OnGoldUpdate += (currentGold) =>
         {
             UIManager.Instance.UpdateUIGold(currentGold);
-            // ShopManager.Instance.CheckRollPrice(currentGold);
             ShopManager.Instance.CheckShopItemPrice(currentGold);
         };
         PlayerManager.Instance.OnRoll += DiceManager.Instance.RollDice;
@@ -77,6 +76,7 @@ public class GameManager : MonoBehaviour
         {
             GridManager.Instance.ReleaseGrid(dice.GridX, dice.GridY);
         };
+        DiceManager.Instance.OnUpdateDicePool += ShopManager.Instance.UpdateShopItem;
 
         GridManager.Instance.Init();
         ShopManager.Instance.Init();
