@@ -9,6 +9,7 @@ public class EnemyManager : MonoBehaviour
     public static EnemyManager Instance;
     public event Action<float> OnWaveSpawn, OnWaveClear;
     public event Action<float, Vector3> OnEnemyKilled;
+    public event Action<float, Vector3> OnEnemyKilledWithXP;
 
     [SerializeField]
     private GameObject enemyPrefab;
@@ -47,10 +48,11 @@ public class EnemyManager : MonoBehaviour
             yield return new WaitForSeconds(timeBetweenSpawns);
         }
     }
-    public void OnEnemyDie(float enemyReward, Vector3 enemyPos)
+    public void OnEnemyDie(float enemyReward, float enemyXP, Vector3 enemyPos)
     {
         currentEnemy--;
         OnEnemyKilled?.Invoke(enemyReward, enemyPos);
+        OnEnemyKilledWithXP?.Invoke(enemyXP, enemyPos);
         if (currentEnemy <= 0)
         {
             OnWaveClear?.Invoke(currentWave);

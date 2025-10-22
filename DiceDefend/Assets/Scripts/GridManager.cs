@@ -26,17 +26,26 @@ public class GridManager : MonoBehaviour
     public void CreateGrid()
     {
         CellGrid = new Cell[gridWidth, gridHeight];
-        Vector3 startPosition = cellSpawnPoint.position; // Lấy vị trí cụ thể từ scene
-
-        for (int y = 0; y < gridHeight; y++)
+        
+        // Kiểm tra số lượng child có đủ không
+        int expectedChildCount = gridWidth * gridHeight;
+        if (this.transform.childCount < expectedChildCount)
         {
-            for (int x = 0; x < gridWidth; x++)
+            Debug.LogError($"Not enough child cells! Expected: {expectedChildCount}, Found: {this.transform.childCount}");
+            return;
+        }
+
+        // Gán các cell từ child objects vào grid
+        for (int i = 0; i < this.transform.childCount && i < expectedChildCount; ++i)
+        {
+            int x = i % gridWidth;
+            int y = i / gridWidth;
+            
+            // Kiểm tra bounds trước khi gán
+            if (x >= 0 && x < gridWidth && y >= 0 && y < gridHeight)
             {
-                Vector3 cellPosition = new Vector3(startPosition.x + x * cellSize, (gridHeight - y) * cellSize - startPosition.y, 1);
-                var cell = Instantiate(cellPrefab, cellPosition, Quaternion.identity);
-                cell.GetComponent<Cell>().Init(x, y);
-                cell.transform.SetParent(this.transform);
-                CellGrid[x, y] = cell.GetComponent<Cell>();
+                CellGrid[x, y] = this.transform.GetChild(i).GetComponent<Cell>();
+                this.transform.GetChild(i).GetComponent<Cell>().Init(x, y);
             }
         }
     }
@@ -66,7 +75,11 @@ public class GridManager : MonoBehaviour
         
         if (targetCell)
         {
-            CellGrid[currentGridX, currentGridY].OnRelease();
+            // Kiểm tra bounds trước khi truy cập CellGrid
+            if (IsValidGridPosition(currentGridX, currentGridY))
+            {
+                CellGrid[currentGridX, currentGridY].OnRelease();
+            }
             PlaceDice(dice, targetCell.GridX, targetCell.GridY);
         }
         else
@@ -76,6 +89,13 @@ public class GridManager : MonoBehaviour
     }
     public void PlaceDice(Dice dice, int gridX, int gridY)
     {
+        // Kiểm tra bounds trước khi truy cập CellGrid
+        if (!IsValidGridPosition(gridX, gridY))
+        {
+            Debug.LogError($"Invalid grid position: ({gridX}, {gridY})");
+            return;
+        }
+
         if (!CellGrid[gridX, gridY].isOccupied)
         {
             CellGrid[gridX, gridY].OnOccupy();
@@ -115,6 +135,14 @@ public class GridManager : MonoBehaviour
     }
     public void ReleaseGrid(int gridX, int gridY)
     {
-        CellGrid[gridX, gridY].OnRelease();
+        if (IsValidGridPosition(gridX, gridY))
+        {
+            CellGrid[gridX, gridY].OnRelease();
+        }
+    }
+
+    private bool IsValidGridPosition(int x, int y)
+    {
+        return x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
     }
 }

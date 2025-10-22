@@ -51,6 +51,10 @@ public class GameManager : MonoBehaviour
             PlayerManager.Instance.UpdateGold(goldEarn);
             FXManager.Instance.PlayEffectGainResource(goldEarn, enemyPos);
         };
+        EnemyManager.Instance.OnEnemyKilledWithXP += (xpEarn, enemyPos) =>
+        {
+            PlayerLevelManager.Instance.AddXP(xpEarn);
+        };
         EnemyManager.Instance.OnWaveClear += SpawnWave;
         
         PlayerManager.Instance.OnWaveUpdate += UIManager.Instance.UpdateUIWave;
@@ -84,6 +88,8 @@ public class GameManager : MonoBehaviour
         EnemyManager.Instance.Init();
         UIManager.Instance.Init();
         PlayerManager.Instance.Init();
+        PlayerLevelManager.Instance.Init();
+        BuffManager.Instance.Init();
         FXManager.Instance.Init();
 
         ChangeState(EnumConst.GameState.InGame);

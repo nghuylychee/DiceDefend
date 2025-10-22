@@ -22,6 +22,7 @@ public class DiceManager : MonoBehaviour
     }
     public void Init()
     {
+        AddDice(0);
         diceList = GetComponentsInChildren<Dice>().ToList();
         foreach (var dice in diceList)
         {

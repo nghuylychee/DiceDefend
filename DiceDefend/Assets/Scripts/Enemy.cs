@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private HealthBar healthBar;
     [SerializeField]
-    private float maxHP, currentHP, moveSpeed, coinEarn, damage, detectionRange, attackSpeed, attackRange, reward;
+    private float maxHP, currentHP, moveSpeed, coinEarn, damage, detectionRange, attackSpeed, attackRange, reward, xpReward;
     private Transform target, king;
     private bool isAlive, isAttacking;
 
@@ -60,7 +60,7 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         isAlive = false;
-        EnemyManager.Instance.OnEnemyDie(reward, this.transform.position);
+        EnemyManager.Instance.OnEnemyDie(reward, xpReward, this.transform.position);
         Destroy(gameObject);
     }
 
@@ -99,11 +99,11 @@ public class Enemy : MonoBehaviour
         if (target == null) return;
 
         // Giữ nguyên vị trí y, chỉ di chuyển theo trục x về phía mục tiêu
-        Vector3 targetPosition = new Vector3(target.position.x, transform.position.y, transform.position.z);
+        Vector3 targetPosition = new Vector3(transform.position.x, target.position.y, transform.position.z);
         transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
         // Kiểm tra nếu đã tới gần mục tiêu
-        float distanceToTarget = Mathf.Abs(transform.position.x - target.position.x);
+        float distanceToTarget = Mathf.Abs(transform.position.y - target.position.y);
         if (distanceToTarget <= attackRange)
         {
             StartCoroutine(AttackTarget());

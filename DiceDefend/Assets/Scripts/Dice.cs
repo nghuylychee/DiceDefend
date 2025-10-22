@@ -24,23 +24,59 @@ public class Dice : MonoBehaviour
     private GameObject bulletPrefab;
     [FoldoutGroup("Dice Stat")] [SerializeField]
     private float rollDuration, rollInterval, bulletSpeed, bulletDamage, currentHP, maxHP, detectionRange;
+    
+    // Base stats để áp dụng buff
+    private float baseBulletDamage, baseBulletSpeed, baseMaxHP, baseDetectionRange;
     [SerializeField]
     private bool isRolling, isDragging, isAlive;
     public void Init(int id)
     {
+        Debug.Log($"Dice Init called with id: {id}");
         DiceTypeID = id;
+        
+        if (DiceManager.Instance.dicePool == null || DiceManager.Instance.dicePool.Count == 0)
+        {
+            Debug.LogError("DicePool is null or empty!");
+            return;
+        }
+        
+        if (id < 0 || id >= DiceManager.Instance.dicePool.Count)
+        {
+            Debug.LogError($"Invalid DiceTypeID: {id}. DicePool count: {DiceManager.Instance.dicePool.Count}");
+            return;
+        }
+        
         diceSprites = DiceManager.Instance.dicePool[DiceTypeID].DiceSprite.ToArray();
+        
         //Init thêm field cho dice trong tương lai
 
-        GridX = -1; GridY = -1;
+        GridX = 0; GridY = 0;
         spriteRenderer = GetComponent<SpriteRenderer>();
         isRolling = false;
         isDragging = false;
         isAlive = true;
+        
+        // Lưu base stats
+        baseBulletDamage = bulletDamage;
+        baseBulletSpeed = bulletSpeed;
+        baseMaxHP = maxHP;
+        baseDetectionRange = detectionRange;
+        
+        // Áp dụng buffs hiện tại
+        ApplyBuffs();
+        
         currentHP = maxHP;
         target = null;
         healthBar.UpdateHealthBar(currentHP / maxHP);
         cooldownImage.fillAmount = 0;
+        
+        // Đặt sprite ban đầu cho dice
+        if (diceSprites != null && diceSprites.Length > 0)
+        {
+            spriteRenderer.sprite = diceSprites[0]; // Đặt sprite đầu tiên làm mặc định
+            Debug.Log($"Dice {id} sprite set to first sprite");
+        }
+        
         // StartCoroutine(Roll());
     }
 
@@ -141,7 +177,7 @@ public class Dice : MonoBehaviour
     private void FindTarget()
     {
         // Tìm Dice trong tầm phát hiện, giả định Dice có tag là "Dice"
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.right, detectionRange);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.up, detectionRange);
         Transform closestEnemy = null;
         float closestDistance = detectionRange;
 
@@ -149,7 +185,7 @@ public class Dice : MonoBehaviour
         {
             if (hit.collider.CompareTag("Enemy"))
             {
-                if (Mathf.Abs(hit.collider.transform.position.y - transform.position.y) < 0.05f) 
+                if (Mathf.Abs(hit.collider.transform.position.x - transform.position.x) < 0.05f) 
                 {
                     float distance = Vector2.Distance(transform.position, hit.transform.position);
                     if (distance < closestDistance)
@@ -189,8 +225,8 @@ public class Dice : MonoBehaviour
         DiceManager.Instance.RemoveDice();
     }
     private void OnMouseDrag()
-    {
-        Debug.Log("Dragging");
+    {   
+        Debug.Log($"OnMouseDrag called on dice {DiceTypeID}, isAlive: {isAlive}, isRolling: {isRolling}");
         isDragging = true;
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
@@ -204,5 +240,31 @@ public class Dice : MonoBehaviour
         ResetDice();
         // StartCoroutine(Roll());
         GridManager.Instance.PlaceDiceByTarget(this);
+    }
+    
+    private void ApplyBuffs()
+    {
+        if (BuffManager.Instance == null) return;
+        
+        // Áp dụng damage buff
+        bulletDamage = BuffManager.Instance.GetBuffValue(BuffType.DiceDamage, baseBulletDamage);
+        
+        // Áp dụng attack speed buff
+        rollInterval = BuffManager.Instance.GetBuffMultiplier(BuffType.DiceAttackSpeed, rollInterval);
+        
+        // Áp dụng health buff
+        maxHP = BuffManager.Instance.GetBuffValue(BuffType.DiceHealth, baseMaxHP);
+        
+        // Áp dụng range buff
+        detectionRange = BuffManager.Instance.GetBuffValue(BuffType.DiceRange, baseDetectionRange);
+    }
+    
+    public void RefreshBuffs()
+    {
+        ApplyBuffs();
+        // Cập nhật HP nếu maxHP thay đổi
+        if (currentHP > maxHP)
+            currentHP = maxHP;
+        healthBar.UpdateHealthBar(currentHP / maxHP);
     }
 }
